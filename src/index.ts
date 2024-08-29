@@ -1,27 +1,17 @@
 import { AxiosInstance } from 'axios';
-
-import type { Deposit } from './types/Deposit';
-import type { Notification } from './types/Notification';
-import type { Profile } from './types/Profile';
-
-import { ServiceBalance } from './services/Balance';
-import { ServiceDeposits } from './services/Deposits';
-import { ServiceNotifications } from './services/Notifications';
-import { ServiceProfile } from './services/Profile';
-
+import { Deposit, Notification, Profile, Balance } from './types';
+import { ServiceBalance, ServiceDeposits, ServiceNotifications, ServiceProfile } from './services';
 import { RequestQRCode } from './account/QRCodes';
 import LoginService from './api/Authentification';
-import { Balance } from './types/Balance';
 
 class Izly {
   private loginService: LoginService;
   private axiosInstance: AxiosInstance;
-  private loggedIn: boolean;
+  private loggedIn: boolean = false;
 
   constructor() {
     this.loginService = new LoginService();
     this.axiosInstance = this.loginService.getAxiosInstance();
-    this.loggedIn = false;
   }
 
   async login(username: string, password: string): Promise<boolean> {
@@ -34,43 +24,34 @@ class Izly {
     }
   }
 
-  async getProfile(): Promise<Profile> {
+  private checkLogin() {
     if (!this.loggedIn) {
       throw new Error('Not logged in. Please login first.');
     }
+  }
 
+  async getProfile(): Promise<Profile> {
+    this.checkLogin();
     return ServiceProfile(this.axiosInstance);
   }
 
   async getNotifications(): Promise<Notification[]> {
-    if (!this.loggedIn) {
-      throw new Error('Not logged in. Please login first.');
-    }
-
+    this.checkLogin();
     return ServiceNotifications(this.axiosInstance);
   }
 
   async getBalance(): Promise<Balance> {
-    if (!this.loggedIn) {
-      throw new Error('Not logged in. Please login first.');
-    }
-
+    this.checkLogin();
     return ServiceBalance(this.axiosInstance);
   }
 
   async getDeposits(): Promise<Deposit[]> {
-    if (!this.loggedIn) {
-      throw new Error('Not logged in. Please login first.');
-    }
-
+    this.checkLogin();
     return ServiceDeposits(this.axiosInstance);
   }
 
   async generateQRCode(): Promise<string[]> {
-    if (!this.loggedIn) {
-      throw new Error('Not logged in. Please login first.');
-    }
-
+    this.checkLogin();
     return RequestQRCode(this.axiosInstance);
   }
 }
