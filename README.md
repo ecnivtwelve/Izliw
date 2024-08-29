@@ -1,4 +1,5 @@
 # Izliw
+Isliw allows students registered at **Les Crous** to get information and pay using their Izly account with an easy-to-use and understandable API.
 
 > [!WARNING]
 > This is a **work in progress**. Major changes and updates may occur.
