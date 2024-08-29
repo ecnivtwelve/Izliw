@@ -36,6 +36,7 @@ declare class Izly {
     private loggedIn;
     constructor();
     login(username: string, password: string): Promise<boolean>;
+    private checkLogin;
     getProfile(): Promise<Profile>;
     getNotifications(): Promise<Notification[]>;
     getBalance(): Promise<Balance>;
