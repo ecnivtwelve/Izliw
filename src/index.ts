@@ -1,9 +1,17 @@
 import { AxiosInstance } from 'axios';
-import { Deposit, Notification, Profile, Balance } from './types';
-import { ServiceBalance, ServiceDeposits, ServiceNotifications, ServiceProfile } from './services';
+
+import type { Deposit } from './types/Deposit';
+import type { Notification } from './types/Notification';
+import type { Profile } from './types/Profile';
+
+import { ServiceBalance } from './services/Balance';
+import { ServiceDeposits } from './services/Deposits';
+import { ServiceNotifications } from './services/Notifications';
+import { ServiceProfile } from './services/Profile';
+
 import { RequestQRCode } from './account/QRCodes';
 import LoginService from './api/Authentification';
-
+import { Balance } from './types/Balance';
 class Izly {
   private loginService: LoginService;
   private axiosInstance: AxiosInstance;
