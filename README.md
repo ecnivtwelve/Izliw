@@ -18,4 +18,4 @@ Isliw allows students registered at **Les Crous** to get information and pay usi
 
 ## Examples
 
-Take a look at the [`examples`](https://github.com/ecnivtwelve/Izliw/tree/js/examples) folder in the GitHub repository to get to know this library.
+Take a look at the [`examples`](https://github.com/ecnivtwelve/Izliw/tree/main/examples) folder in the GitHub repository to get to know this library.
