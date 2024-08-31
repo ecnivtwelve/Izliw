@@ -1,5 +1,5 @@
 import axios, { AxiosInstance, AxiosResponse, AxiosRequestConfig } from 'axios';
-import * as cheerio from 'cheerio';
+import { extractRequestVerificationToken } from '~/utils/IzlyHTML';
 
 class LoginService {
   private axiosInstance: AxiosInstance;
@@ -55,8 +55,11 @@ class LoginService {
         'Referer': 'https://mon-espace.izly.fr/',
       });
 
-      const $ = cheerio.load(response.data);
-      const requestVerificationToken = $('input[name="__RequestVerificationToken"]').val() as string;
+      const requestVerificationToken = extractRequestVerificationToken(response.data);
+
+      if (!requestVerificationToken) {
+        throw new Error('Failed to extract request verification token');
+      }
 
       // Step 2: POST login request
       response = await this.makeRequest('POST', 'https://mon-espace.izly.fr/Home/Logon',

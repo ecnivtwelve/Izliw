@@ -1,9 +1,9 @@
 import { AxiosInstance } from 'axios';
-import * as cheerio from 'cheerio';
 import { Notification } from '../types/Notification';
 import { extractDate } from '~/utils/IzlyDate';
+import { extractTableRows, extractTableColumns } from '~/utils/IzlyHTML';
 
-export async function ServiceNotifications(axiosInstance: AxiosInstance): Promise < Notification[] > {
+export async function ServiceNotifications(axiosInstance: AxiosInstance): Promise<Notification[]> {
   try {
     const response = await axiosInstance.get('https://mon-espace.izly.fr/Profile?page=1', {
       headers: {
@@ -14,14 +14,18 @@ export async function ServiceNotifications(axiosInstance: AxiosInstance): Promis
     });
 
     if (response.status === 200) {
-      const $ = cheerio.load(response.data);
+      const htmlContent = response.data;
       const notifications: Notification[] = [];
 
-      $('.table-responsive .table tr').each((index, element) => {
-        const $element = $(element);
-        const date = extractDate($element.find('td:nth-child(2)').text().trim(), ' à ');
-        const description = $element.find('td:nth-child(3)').text().trim();
-        notifications.push({ date, description });
+      const rows = extractTableRows(htmlContent);
+
+      rows.forEach(row => {
+        const columns = extractTableColumns(row);
+        if (columns.length >= 3) {
+          const date = extractDate(columns[1], ' à ');
+          const description = columns[2];
+          notifications.push({ date, description });
+        }
       });
 
       return notifications;

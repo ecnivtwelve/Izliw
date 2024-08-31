@@ -1,6 +1,6 @@
 import { AxiosInstance } from 'axios';
-import * as cheerio from 'cheerio';
 import { Profile } from '../types/Profile';
+import { extractTextBetweenTags, extractTextByClass, extractTextById } from '~/utils/IzlyHTML';
 
 export async function ServiceProfile(axiosInstance: AxiosInstance): Promise<Profile> {
   try {
@@ -11,20 +11,20 @@ export async function ServiceProfile(axiosInstance: AxiosInstance): Promise<Prof
     });
 
     if (response.status === 200) {
-      const $ = cheerio.load(response.data);
+      const htmlContent = response.data;
 
       const profile: Profile = {
-        name: $('h1').first().text().trim(),
-        identifier: $('.heading-label-value').eq(0).text().trim(),
-        pseudo: $('.heading-label-value').eq(1).text().trim(),
-        birthDate: $('.heading-label-value').eq(2).text().trim(),
-        address: $('.addWay').text().trim() + ', ' + $('.addZipCode').text().trim() + ' ' + $('.addCity').text().trim(),
-        primaryEmail: $('.rectangle').eq(1).text().trim(),
-        secondaryEmail: $('#emailPersonnel').text().trim(),
-        phoneNumber: $('#currentPhoneNumber').text().trim(),
-        companyCode: $('.rectangle').eq(4).text().trim(),
-        tariffCode: $('.rectangle').eq(5).text().trim(),
-        crousRightsEndDate: $('.rectangle').eq(6).text().trim()
+        name: extractTextBetweenTags(htmlContent, 'h1'),
+        identifier: extractTextByClass(htmlContent, 'heading-label-value', 0),
+        pseudo: extractTextByClass(htmlContent, 'heading-label-value', 1),
+        birthDate: extractTextByClass(htmlContent, 'heading-label-value', 2),
+        address: `${extractTextByClass(htmlContent, 'addWay')}, ${extractTextByClass(htmlContent, 'addZipCode')} ${extractTextByClass(htmlContent, 'addCity')}`,
+        primaryEmail: extractTextByClass(htmlContent, 'rectangle', 1),
+        secondaryEmail: extractTextById(htmlContent, 'emailPersonnel'),
+        phoneNumber: extractTextById(htmlContent, 'currentPhoneNumber'),
+        companyCode: extractTextByClass(htmlContent, 'rectangle', 4),
+        tariffCode: extractTextByClass(htmlContent, 'rectangle', 5),
+        crousRightsEndDate: extractTextByClass(htmlContent, 'rectangle', 6)
       };
 
       return profile;

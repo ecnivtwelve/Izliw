@@ -1,10 +1,10 @@
 import { AxiosInstance } from 'axios';
-import * as cheerio from 'cheerio';
 import { Deposit } from '../types/Deposit';
 import { extractDate } from '~/utils/IzlyDate';
 import { extractAmount } from '~/utils/IzlyAmount';
+import { extractAllListItems, extractTextByClass, stripHtmlTags } from '~/utils/IzlyHTML';
 
-export async function ServiceDeposits(axiosInstance: AxiosInstance): Promise < Deposit[] > {
+export async function ServiceDeposits(axiosInstance: AxiosInstance): Promise<Deposit[]> {
   const response = await axiosInstance.get('https://mon-espace.izly.fr/Home/GetTopups', {
     headers: {
       'Referer': 'https://mon-espace.izly.fr/',
@@ -12,15 +12,23 @@ export async function ServiceDeposits(axiosInstance: AxiosInstance): Promise < D
     }
   });
 
+  const htmlContent = response.data;
   const deposits: Deposit[] = [];
-  const $ = cheerio.load(response.data);
-  $('.list-group-item').each((index, element) => {
-    const $element = $(element);
-    const type = $element.find('.operation-type').text().split(' - ')[0]?.trim();
-    const method = $element.find('.operation-type').text().split(' - ')[1]?.trim();
-    const date = extractDate($element.find('.oeration-date').text().trim(), ' ');
-    const amount = extractAmount($element.find('.operation-amount').text().trim());
-    const status = $element.find('.badge').text().trim();
+
+  const listItems = extractAllListItems(htmlContent);
+
+  listItems.forEach(item => {
+    const typeInfo = extractTextByClass(item, 'operation-type');
+    const [type, method] = typeInfo.split(' - ').map(s => s.trim());
+
+    const dateText = extractTextByClass(item, 'oeration-date');
+    const date = extractDate(dateText, ' ');
+
+    const amountText = extractTextByClass(item, 'operation-amount');
+    const amount = extractAmount(amountText);
+
+    const status = extractTextByClass(item, 'badge');
+
     deposits.push({ type, method, date, amount, status });
   });
 
