@@ -12,6 +12,8 @@ import { ServiceProfile } from './services/Profile';
 import { RequestQRCode } from './account/QRCodes';
 import LoginService from './api/Authentification';
 import { Balance } from './types/Balance';
+import { ServicePayments } from './services/Payments';
+import { Payment } from './types/Payment';
 class Izly {
   private loginService: LoginService;
   private axiosInstance: AxiosInstance;
@@ -56,6 +58,11 @@ class Izly {
   async getDeposits(): Promise<Deposit[]> {
     this.checkLogin();
     return ServiceDeposits(this.axiosInstance);
+  }
+
+  async getPayments(): Promise<Payment[]> {
+    this.checkLogin();
+    return ServicePayments(this.axiosInstance);
   }
 
   async generateQRCode(): Promise<string[]> {

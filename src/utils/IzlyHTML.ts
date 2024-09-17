@@ -17,7 +17,7 @@ export function extractTextById(html: string, id: string): string {
 }
 
 export function extractAllListItems(html: string): string[] {
-  const regex = /<li class="list-group-item"[^>]*>[\s\S]*?<\/li>/g;
+  const regex = /<li[^>]*class="[^"]*list-group-item[^"]*"[^>]*>[\s\S]*?<\/li>/g;
   return html.match(regex) || [];
 }
 

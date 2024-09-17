@@ -30,6 +30,13 @@ interface Balance {
     amount: number;
 }
 
+interface Payment {
+    label: string;
+    date: Date;
+    amount: number;
+    status: string;
+}
+
 declare class Izly {
     private loginService;
     private axiosInstance;
@@ -41,6 +48,7 @@ declare class Izly {
     getNotifications(): Promise<Notification[]>;
     getBalance(): Promise<Balance>;
     getDeposits(): Promise<Deposit[]>;
+    getPayments(): Promise<Payment[]>;
     generateQRCode(): Promise<string[]>;
 }
 
