@@ -11,7 +11,7 @@ Isliw allows students registered at **Les Crous** to get information and pay usi
 - [x] Retreive profile information
 - [x] Get current balance
 - [x] Get a list of deposits
-- [ ] Get a list of payments
+- [x] Get a list of payments
 - [x] Generate QR-codes
 - [x] Get notifications
 - [ ] Get news
